@@ -430,9 +430,10 @@
         <section>
             <h2>HENSYUKOKI</h2>
             <div id="note-container">
-                <div class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>読み込み中...</p>
+                <div class="loading" style="display: block; padding: 2rem 0;">
+                    <div style="height: 80px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; margin-bottom: 1rem;"></div>
+                    <div style="height: 80px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; margin-bottom: 1rem;"></div>
+                    <div style="height: 80px; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite;"></div>
                 </div>
             </div>
         </section>
@@ -481,8 +482,8 @@
                 
                 let episodesHTML = '';
                 
-                // 最新12件のみ取得（速度改善）
-                const limitedItems = Array.from(items).slice(0, 12);
+                // 最新8件のみ取得（速度改善）
+                const limitedItems = Array.from(items).slice(0, 8);
                 
                 limitedItems.forEach((item, index) => {
                     const title = item.querySelector('title')?.textContent || '';
@@ -664,7 +665,13 @@
                 const proxyUrl = 'https://api.allorigins.win/raw?url=';
                 const feedUrl = 'https://note.com/jiujitsuniwaka/rss';
                 
-                const response = await fetch(proxyUrl + encodeURIComponent(feedUrl));
+                // タイムアウト処理（Promise.race使用）
+                const fetchPromise = fetch(proxyUrl + encodeURIComponent(feedUrl));
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Timeout')), 8000)
+                );
+                
+                const response = await Promise.race([fetchPromise, timeoutPromise]);
                 
                 if (!response.ok) {
                     throw new Error('フィードの取得に失敗しました');
@@ -716,9 +723,12 @@
                 container.innerHTML = notesHTML;
                 
             } catch (error) {
+                console.error('Note記事の読み込みエラー:', error);
+                // エラー時は控えめに表示
                 container.innerHTML = `
-                    <div class="error">
-                        <p>記事の読み込みに失敗しました</p>
+                    <div style="text-align: center; padding: 2rem; color: #999999; font-size: 0.9rem;">
+                        記事の読み込みに失敗しました。<br>
+                        <a href="https://note.com/jiujitsuniwaka" target="_blank" style="color: #666666; text-decoration: underline;">noteで直接読む →</a>
                     </div>
                 `;
             }
