@@ -3,18 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ジュウジュツ ニワカ | ポッドキャスト</title>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>ジュウジュツ ニワカ</title>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --black: #0a0a0a;
-            --white: #fafafa;
-            --gray: #666666;
-            --light-gray: #e5e5e5;
-            --accent: #ff3b30;
-            --accent-dim: #ff3b3020;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -22,378 +13,445 @@
         }
 
         body {
-            font-family: 'Zen Kaku Gothic New', sans-serif;
-            background: var(--white);
-            color: var(--black);
-            line-height: 1.7;
-            overflow-x: hidden;
+            font-family: 'DotGothic16', sans-serif;
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.8;
+            position: relative;
         }
 
-        /* ヘッダーは削除 */
-
-        /* メインコンテンツ */
-        main {
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            padding: 4rem 2rem;
-        }
-
-        /* ヒーローセクション */
-        .hero {
-            margin-bottom: 6rem;
-            animation: fadeIn 0.8s ease-out 0.2s both;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero-content {
-            display: flex;
-            flex-direction: column;
-            gap: 3rem;
-        }
-
-        .hero-image {
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle, #000000 1px, transparent 1px),
+                radial-gradient(circle, #000000 1px, transparent 1px);
+            background-size: 50px 50px, 70px 70px;
+            background-position: 0 0, 25px 35px;
+            opacity: 0.03;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        main {
             max-width: 800px;
             margin: 0 auto;
-            background: var(--black);
-            border: 2px solid var(--black);
-            overflow: hidden;
+            padding: 3rem 1.5rem;
         }
 
-        .hero-image img {
+        /* ロゴ */
+        .logo {
+            margin-bottom: 1rem;
+        }
+
+        .logo img {
             width: 100%;
-            height: auto;
+            max-width: 700px;
+            display: block;
+            margin: 0 auto;
+            filter: invert(1);
+        }
+
+        .logo-description {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666666;
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto 4rem;
+            padding: 0 1rem;
+        }
+
+        /* セクション */
+        section {
+            margin-bottom: 4rem;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            font-weight: normal;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 0.5rem;
+        }
+
+        /* エピソード */
+        .episodes-carousel-wrapper {
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            cursor: grab;
+        }
+
+        .episodes-carousel-wrapper:active {
+            cursor: grabbing;
+        }
+
+        .episodes-carousel {
+            display: flex;
+            gap: 1rem;
+            transition: transform 0.1s linear;
+        }
+
+        .episode {
+            cursor: pointer;
+            flex-shrink: 0;
+            width: 250px;
+            height: 250px;
+            overflow: hidden;
+            background: #e0e0e0;
+            position: relative;
+        }
+
+        .episode:hover .episode-overlay {
+            opacity: 1;
+        }
+
+        .episode img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             display: block;
         }
 
-        .hero-text {
+        .episode-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
             text-align: center;
         }
 
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 300;
-            letter-spacing: -0.03em;
-            margin-bottom: 1rem;
-            line-height: 1.1;
+        .episode-overlay-number {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: #999999;
         }
 
-        .hero h1 strong {
-            font-weight: 700;
+        .episode-overlay-title {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
         }
 
-        .hero-description {
-            font-size: 1.1rem;
-            color: var(--gray);
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+        .episode-overlay-date {
+            font-size: 0.85rem;
+            color: #999999;
         }
 
-        .hero-links {
+        /* Note */
+        .note-item {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .note-item:hover {
+            background: #f5f5f5;
+            margin-left: -1rem;
+            margin-right: -1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .episode-thumbnail {
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+            background: #e0e0e0;
+            overflow: hidden;
+        }
+
+        .episode-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .episode-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .episode-header, .note-header {
             display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #666666;
+        }
+
+        .episode-title, .note-title {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: normal;
+        }
+
+        .episode-description, .note-description {
+            font-size: 0.9rem;
+            color: #666666;
+            line-height: 1.6;
+        }
+
+        /* お便り */
+        .otayori {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 2px solid #000000;
+            margin-top: 4rem;
+        }
+
+        .otayori p {
+            margin-bottom: 1.5rem;
+            color: #666666;
+        }
+
+        /* ポッドキャストリンク */
+        .podcast-links-text {
+            text-align: right;
+            margin-top: 1rem;
+            margin-bottom: 4rem;
+            font-size: 0.85rem;
+        }
+
+        .podcast-links-text a {
+            color: #666666;
+            text-decoration: none;
+            margin-left: 1rem;
+            transition: color 0.3s;
+        }
+
+        .podcast-links-text a:hover {
+            color: #000000;
+        }
+
+        .personalities {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .personality {
+            text-align: center;
+        }
+
+        .personality-image {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1rem;
+            filter: grayscale(100%);
+        }
+
+        .personality-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .personality-name {
+            font-size: 1.1rem;
+            font-weight: normal;
+            margin-bottom: 0.5rem;
+        }
+
+        .personality-bio {
+            font-size: 0.9rem;
+            color: #666666;
+            line-height: 1.6;
         }
 
         .btn {
             display: inline-block;
-            padding: 0.75rem 1.5rem;
+            padding: 0.8rem 2rem;
+            background: #000000;
+            color: #ffffff;
             text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            border: 1px solid var(--black);
+            font-size: 0.9rem;
+            transition: all 0.2s;
         }
 
-        .btn-primary {
-            background: var(--black);
-            color: var(--white);
+        .btn:hover {
+            background: #ffffff;
+            color: #000000;
+            outline: 2px solid #000000;
         }
 
-        .btn-primary:hover {
-            background: var(--white);
-            color: var(--black);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--black);
-        }
-
-        .btn-secondary:hover {
-            background: var(--black);
-            color: var(--white);
-        }
-
-        /* Spotifyプレーヤー */
-        .spotify-player {
-            margin-bottom: 4rem;
-            animation: fadeIn 0.8s ease-out 0.3s both;
-        }
-
-        .spotify-embed {
-            width: 100%;
-            height: 232px;
-            border: 1px solid var(--light-gray);
-        }
-
-        /* お便りコーナー */
-        .otayori-section {
-            margin-bottom: 4rem;
-            padding: 3rem;
-            background: var(--black);
-            color: var(--white);
-            animation: fadeIn 0.8s ease-out 0.35s both;
-        }
-
-        .otayori-section h2 {
-            font-size: 2rem;
-            font-weight: 300;
-            margin-bottom: 1rem;
-        }
-
-        .otayori-section p {
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 1.5rem;
-        }
-
-        .btn-white {
-            background: var(--white);
-            color: var(--black);
-            border: 1px solid var(--white);
-        }
-
-        .btn-white:hover {
-            background: transparent;
-            color: var(--white);
-        }
-
-        /* エピソード一覧 */
-        .section-title {
-            font-size: 0.85rem;
-            font-family: 'IBM Plex Mono', monospace;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: var(--gray);
-            margin-bottom: 2rem;
-            animation: fadeIn 0.8s ease-out 0.4s both;
-        }
-
-        .episodes {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-            animation: fadeIn 0.8s ease-out 0.6s both;
-        }
-
-        .episode {
+        /* フッター */
+        footer {
+            text-align: center;
             padding: 2rem 0;
-            border-bottom: 1px solid var(--light-gray);
-            transition: all 0.3s ease;
-            cursor: pointer;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 3rem;
         }
 
-        .episode:hover {
-            background: var(--accent-dim);
-            padding-left: 1rem;
-            padding-right: 1rem;
-            margin-left: -1rem;
-            margin-right: -1rem;
+        footer a {
+            color: #666666;
+            text-decoration: none;
+            margin: 0 1rem;
+            font-size: 0.9rem;
         }
 
-        .episode-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 0.75rem;
-            gap: 1rem;
+        footer a:hover {
+            color: #000000;
         }
 
-        .episode-number {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--accent);
-            font-weight: 600;
+        footer p {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #999999;
         }
 
-        .episode-date {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--gray);
-        }
-
-        .episode-title {
-            font-size: 1.3rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.01em;
-        }
-
-        .episode-description {
-            color: var(--gray);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        /* ローディング状態 */
+        /* ローディング */
         .loading {
             text-align: center;
-            padding: 4rem 2rem;
-            color: var(--gray);
+            padding: 3rem;
+            color: #666666;
         }
 
         .loading-spinner {
             display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--light-gray);
-            border-top-color: var(--accent);
+            width: 30px;
+            height: 30px;
+            border: 3px solid #e0e0e0;
+            border-top-color: #000000;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
 
-        /* エラー状態 */
+        /* エラー */
         .error {
             text-align: center;
-            padding: 4rem 2rem;
-            color: var(--gray);
-        }
-
-        .error-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        /* フッター */
-        footer {
-            max-width: 900px;
-            margin: 6rem auto 0;
-            padding: 3rem 2rem;
-            border-top: 1px solid var(--light-gray);
-            text-align: center;
-            color: var(--gray);
-            font-size: 0.9rem;
+            padding: 3rem;
+            color: #666666;
         }
 
         /* レスポンシブ */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
+            main {
+                padding: 2rem 1rem;
             }
 
-            .hero-description {
-                font-size: 1rem;
+            .personalities {
+                grid-template-columns: 1fr;
+                gap: 3rem;
             }
 
-            .episode-header {
+            .episode {
+                width: 180px;
+                height: 180px;
+            }
+
+            .episode-header, .note-header {
                 flex-direction: column;
-                align-items: flex-start;
             }
 
-            .episode-title {
+            h2 {
                 font-size: 1.1rem;
-            }
-
-            .otayori-section {
-                padding: 2rem;
-            }
-
-            .otayori-section h2 {
-                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
-
     <main>
-        <section class="hero">
-            <div class="hero-content">
-                <div class="hero-image">
-                    <img src="jiujitsu-niwaka-logo.png" alt="ジュウジュツニワカ">
-                </div>
-                <div class="hero-text">
-                    <p class="hero-description">
-                        柔術について語るポッドキャスト。初心者の視点から柔術の魅力を探求します。
-                    </p>
-                    <div class="hero-links">
-                        <a href="https://open.spotify.com/show/6aqbNklXR1k6zFT2vNPGjj" target="_blank" class="btn btn-primary">Spotifyで聴く</a>
-                        <a href="https://note.com/jiujitsu_niwaka" target="_blank" class="btn btn-secondary">noteを読む</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Spotifyプレーヤー -->
-        <section class="spotify-player">
-            <h2 class="section-title">Listen on Spotify</h2>
-            <iframe class="spotify-embed" 
-                    src="https://open.spotify.com/embed/show/6aqbNklXR1k6zFT2vNPGjj?utm_source=generator" 
-                    frameBorder="0" 
-                    allowfullscreen="" 
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                    loading="lazy">
-            </iframe>
-        </section>
-
-        <!-- お便りコーナー -->
-        <section class="otayori-section">
-            <h2>お便りコーナー</h2>
-            <p>番組への感想、質問、リクエストなどお待ちしています。<br>
-            あなたの柔術体験やエピソードもぜひお聞かせください。</p>
-            <a href="https://forms.gle/DoRAkUBufxhwdeWJ6" target="_blank" class="btn btn-white">
-                お便りを送る
-            </a>
-        </section>
-
-        <h2 class="section-title">Episodes</h2>
-        
-        <div id="episodes-container">
-            <div class="loading">
-                <div class="loading-spinner"></div>
-                <p style="margin-top: 1rem;">エピソードを読み込み中...</p>
-            </div>
+        <!-- ロゴ -->
+        <div class="logo">
+            <img src="jiujitsu-niwaka-logo.png" alt="ジュウジュツニワカ">
         </div>
+        <p class="logo-description">
+            柔術・グラップリング・総合格闘技の世界で起きていること、テクニック、そして選手たちのキャラやドラマまでを、ゆるく語るトーク番組
+        </p>
+
+        <!-- エピソード一覧 -->
+        <section>
+            <h2>EPISODES</h2>
+            <div id="episodes-container">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>読み込み中...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ポッドキャストリンク -->
+        <div class="podcast-links-text">
+            <a href="https://open.spotify.com/show/6aqbNklXR1k6zFT2vNPGjj" target="_blank">Spotify</a>
+            <a href="https://podcasts.apple.com/us/podcast/ジュウジュツ-ニワカーあした道場で話したくなる雑談/id1853188871" target="_blank">Apple Podcasts</a>
+            <a href="https://music.amazon.co.jp/podcasts/51f983ab-e8c8-4edb-8e82-a7852ed2e15d/ジュウジュツ-ニワカーあした道場で話したくなる雑談" target="_blank">Amazon Music</a>
+        </div>
+
+        <!-- パーソナリティー -->
+        <section>
+            <h2>PERSONALITY</h2>
+            <div class="personalities">
+                <div class="personality">
+                    <div class="personality-image">
+                        <img src="sera.png" alt="Sera">
+                    </div>
+                    <div class="personality-name">Sera</div>
+                    <div class="personality-bio">国内外のグラップリングシーンで実績を残し続ける現役ファイター</div>
+                </div>
+                <div class="personality">
+                    <div class="personality-image">
+                        <img src="matsui.png" alt="Matsui">
+                    </div>
+                    <div class="personality-name">Matsui</div>
+                    <div class="personality-bio">格闘技は一旦休憩中。柔術の帯でいうとまだこれからな立場</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- note記事一覧 -->
+        <section>
+            <h2>HENSYUKOKI</h2>
+            <div id="note-container">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>読み込み中...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- お便り -->
+        <section class="otayori">
+            <h2 style="border: none; text-align: center; padding: 0; margin-bottom: 1rem;">OTAYORI</h2>
+            <p>番組への感想、質問、リクエストなどお待ちしています。</p>
+            <a href="https://forms.gle/DoRAkUBufxhwdeWJ6" target="_blank" class="btn">お便りを送る</a>
+        </section>
     </main>
 
+    <!-- フッター -->
     <footer>
-        <div style="margin-bottom: 1.5rem;">
-            <a href="https://note.com/jiujitsu_niwaka" target="_blank" style="color: var(--gray); text-decoration: none; margin: 0 1rem; transition: color 0.3s ease;">note</a>
-            <a href="https://x.com/jiujitsu_niwaka" target="_blank" style="color: var(--gray); text-decoration: none; margin: 0 1rem; transition: color 0.3s ease;">X</a>
-        </div>
-        <p>&copy; 2026 ジュウジュツ ニワカ. All rights reserved.</p>
+        <a href="https://note.com/jiujitsuniwaka" target="_blank">note</a>
+        <a href="https://x.com/jiujitsu_niwaka" target="_blank">X</a>
+        <p>&copy; 2026 ジュウジュツニワカ</p>
     </footer>
 
     <script>
-        // RSSフィードから取得したデータを表示
-        // Anchor（Spotify for Podcasters）のRSSフィードを使用
-        
+        // RSSフィードからエピソードを取得
         async function loadEpisodes() {
             const container = document.getElementById('episodes-container');
             
             try {
-                // RSSフィードを取得
-                // CORS制限を回避するため、プロキシサービスを使用
                 const proxyUrl = 'https://api.allorigins.win/raw?url=';
                 const feedUrl = 'https://anchor.fm/s/10b36b274/podcast/rss';
                 
@@ -406,78 +464,234 @@
                 const xmlText = await response.text();
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-                
-                // エピソードを取得
                 const items = xmlDoc.querySelectorAll('item');
                 
                 if (items.length === 0) {
                     throw new Error('エピソードが見つかりませんでした');
                 }
                 
-                // エピソードをHTML化
-                let episodesHTML = '<div class="episodes">';
+                let episodesHTML = '';
                 
-                items.forEach((item, index) => {
-                    const title = item.querySelector('title')?.textContent || 'タイトルなし';
-                    const description = item.querySelector('description')?.textContent || '';
+                // 全エピソードを取得
+                const allItems = Array.from(items);
+                
+                allItems.forEach((item, index) => {
+                    const title = item.querySelector('title')?.textContent || '';
                     const pubDate = item.querySelector('pubDate')?.textContent || '';
-                    
-                    // リンクを取得（Anchorの場合はenclosureのURLを使用）
                     const link = item.querySelector('link')?.textContent || 
                                 item.querySelector('guid')?.textContent || '#';
                     
-                    // 日付をフォーマット
+                    // サムネイル画像を取得
+                    const imageTag = item.querySelector('itunes\\:image, image');
+                    const thumbnail = imageTag?.getAttribute('href') || 
+                                    imageTag?.getAttribute('url') || '';
+                    
                     let formattedDate = '';
                     if (pubDate) {
                         const date = new Date(pubDate);
                         formattedDate = date.toLocaleDateString('ja-JP', {
                             year: 'numeric',
-                            month: 'short',
-                            day: 'numeric'
+                            month: '2-digit',
+                            day: '2-digit'
                         });
                     }
                     
-                    // HTMLタグを除去（descriptionにHTMLが含まれている場合）
-                    const cleanDescription = description.replace(/<[^>]*>/g, '');
+                    const episodeNumber = String(items.length - index).padStart(2, '0');
                     
                     episodesHTML += `
                         <div class="episode" onclick="window.open('${link}', '_blank')">
-                            <div class="episode-header">
-                                <span class="episode-number">EP ${String(items.length - index).padStart(2, '0')}</span>
-                                <span class="episode-date">${formattedDate}</span>
+                            ${thumbnail ? `<img src="${thumbnail}" alt="${title}">` : ''}
+                            <div class="episode-overlay">
+                                <div class="episode-overlay-number">EP ${episodeNumber}</div>
+                                <div class="episode-overlay-title">${title}</div>
+                                <div class="episode-overlay-date">${formattedDate}</div>
                             </div>
-                            <h3 class="episode-title">${title}</h3>
-                            <p class="episode-description">${cleanDescription.substring(0, 200)}${cleanDescription.length > 200 ? '...' : ''}</p>
                         </div>
                     `;
                 });
                 
-                episodesHTML += '</div>';
-                container.innerHTML = episodesHTML;
+                // 無限ループのために同じ内容を3回繰り返す
+                const tripleHTML = episodesHTML + episodesHTML + episodesHTML;
                 
-                console.log(`✓ ${items.length}件のエピソードを読み込みました`);
+                container.innerHTML = `
+                    <div class="episodes-carousel-wrapper" id="carousel-wrapper">
+                        <div class="episodes-carousel" id="carousel">
+                            ${tripleHTML}
+                        </div>
+                    </div>
+                `;
+                
+                // マウス連動スクロールを設定
+                setupCarousel();
                 
             } catch (error) {
-                console.error('エピソードの読み込みエラー:', error);
                 container.innerHTML = `
                     <div class="error">
-                        <div class="error-icon">⚠️</div>
                         <p>エピソードの読み込みに失敗しました</p>
-                        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray);">
-                            ${error.message}
-                        </p>
-                        <p style="margin-top: 1.5rem;">
-                            <a href="https://open.spotify.com/show/6aqbNklXR1k6zFT2vNPGjj" target="_blank" class="btn btn-primary">
-                                Spotifyで聴く
-                            </a>
-                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        // マウスドラッグでカルーセルをスクロール
+        function setupCarousel() {
+            const wrapper = document.getElementById('carousel-wrapper');
+            const carousel = document.getElementById('carousel');
+            
+            if (!wrapper || !carousel) return;
+            
+            let currentX = 0;
+            let animationId = null;
+            let isDragging = false;
+            let startX = 0;
+            let dragSpeed = 0;
+            const baseSpeed = 0.5; // 遅くした（元: 1）
+            const dragMultiplier = 1.5; // ドラッグの感度も調整（元: 2）
+            
+            // カルーセルの幅を取得
+            const getCarouselWidth = () => carousel.scrollWidth / 3;
+            
+            // マウスダウン
+            wrapper.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX;
+                dragSpeed = 0;
+                wrapper.style.cursor = 'grabbing';
+            });
+            
+            // マウスムーブ
+            wrapper.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                
+                const diff = e.clientX - startX;
+                dragSpeed = diff * dragMultiplier;
+                startX = e.clientX;
+            });
+            
+            // マウスアップ
+            const handleMouseUp = () => {
+                if (isDragging) {
+                    isDragging = false;
+                    dragSpeed = 0;
+                    wrapper.style.cursor = 'grab';
+                }
+            };
+            
+            wrapper.addEventListener('mouseup', handleMouseUp);
+            document.addEventListener('mouseup', handleMouseUp);
+            
+            // マウスリーブ
+            wrapper.addEventListener('mouseleave', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    dragSpeed = 0;
+                    wrapper.style.cursor = 'grab';
+                }
+            });
+            
+            // アニメーションループ
+            function animate() {
+                if (isDragging) {
+                    // ドラッグ中はドラッグの速度で動く
+                    currentX += dragSpeed;
+                } else {
+                    // 通常は自動で右へ流れる
+                    currentX -= baseSpeed;
+                }
+                
+                // 無限ループのための位置調整（スムーズに）
+                const carouselWidth = getCarouselWidth();
+                
+                // 左端に達したらシームレスに戻す
+                if (currentX <= -carouselWidth * 1.5) {
+                    currentX += carouselWidth;
+                }
+                // 右端に達したらシームレスに戻す
+                if (currentX >= -carouselWidth * 0.5) {
+                    currentX -= carouselWidth;
+                }
+                
+                carousel.style.transform = `translateX(${currentX}px)`;
+                
+                animationId = requestAnimationFrame(animate);
+            }
+            
+            // 初期位置を設定（中央のセットから開始）
+            currentX = -getCarouselWidth();
+            animate();
+        }
+
+        // noteのRSSフィードから記事を取得
+        async function loadNoteArticles() {
+            const container = document.getElementById('note-container');
+            
+            try {
+                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const feedUrl = 'https://note.com/jiujitsuniwaka/rss';
+                
+                const response = await fetch(proxyUrl + encodeURIComponent(feedUrl));
+                
+                if (!response.ok) {
+                    throw new Error('フィードの取得に失敗しました');
+                }
+                
+                const xmlText = await response.text();
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+                const items = xmlDoc.querySelectorAll('item');
+                
+                if (items.length === 0) {
+                    throw new Error('記事が見つかりませんでした');
+                }
+                
+                let notesHTML = '';
+                
+                // 最新3件のみ表示
+                const latestItems = Array.from(items).slice(0, 3);
+                
+                latestItems.forEach((item, index) => {
+                    const title = item.querySelector('title')?.textContent || '';
+                    const description = item.querySelector('description')?.textContent || '';
+                    const pubDate = item.querySelector('pubDate')?.textContent || '';
+                    const link = item.querySelector('link')?.textContent || '#';
+                    
+                    let formattedDate = '';
+                    if (pubDate) {
+                        const date = new Date(pubDate);
+                        formattedDate = date.toLocaleDateString('ja-JP', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                        });
+                    }
+                    
+                    const cleanDescription = description.replace(/<[^>]*>/g, '');
+                    
+                    notesHTML += `
+                        <div class="note-item" onclick="window.open('${link}', '_blank')">
+                            <div class="note-header">
+                                <span>${formattedDate}</span>
+                            </div>
+                            <div class="note-title">${title}</div>
+                            <div class="note-description">${cleanDescription.substring(0, 100)}${cleanDescription.length > 100 ? '...' : ''}</div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = notesHTML;
+                
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="error">
+                        <p>記事の読み込みに失敗しました</p>
                     </div>
                 `;
             }
         }
         
-        // ページ読み込み時にエピソードを取得
+        // ページ読み込み時に両方を取得
         loadEpisodes();
+        loadNoteArticles();
     </script>
 </body>
 </html>
