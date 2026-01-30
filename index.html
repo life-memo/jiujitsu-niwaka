@@ -319,23 +319,28 @@
 
         /* ローディング */
         .loading {
-            text-align: center;
-            padding: 3rem;
-            color: #666666;
+            display: flex;
+            gap: 1rem;
+            padding: 2rem 0;
+            overflow: hidden;
         }
 
-        .loading-spinner {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 3px solid #e0e0e0;
-            border-top-color: #000000;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .skeleton-item {
+            flex-shrink: 0;
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
         }
 
         /* エラー */
@@ -386,8 +391,9 @@
             <h2>EPISODES</h2>
             <div id="episodes-container">
                 <div class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>読み込み中...</p>
+                    <div class="skeleton-item"></div>
+                    <div class="skeleton-item"></div>
+                    <div class="skeleton-item"></div>
                 </div>
             </div>
         </section>
@@ -443,6 +449,9 @@
     <footer>
         <a href="https://note.com/jiujitsuniwaka" target="_blank">note</a>
         <a href="https://x.com/jiujitsu_niwaka" target="_blank">X</a>
+        <a href="https://open.spotify.com/show/6aqbNklXR1k6zFT2vNPGjj" target="_blank">Spotify</a>
+        <a href="https://podcasts.apple.com/us/podcast/ジュウジュツ-ニワカーあした道場で話したくなる雑談/id1853188871" target="_blank">Apple Podcasts</a>
+        <a href="https://music.amazon.co.jp/podcasts/51f983ab-e8c8-4edb-8e82-a7852ed2e15d/ジュウジュツ-ニワカーあした道場で話したくなる雑談" target="_blank">Amazon Music</a>
         <p>&copy; 2026 ジュウジュツニワカ</p>
     </footer>
 
@@ -472,10 +481,10 @@
                 
                 let episodesHTML = '';
                 
-                // 全エピソードを取得
-                const allItems = Array.from(items);
+                // 最新12件のみ取得（速度改善）
+                const limitedItems = Array.from(items).slice(0, 12);
                 
-                allItems.forEach((item, index) => {
+                limitedItems.forEach((item, index) => {
                     const title = item.querySelector('title')?.textContent || '';
                     const pubDate = item.querySelector('pubDate')?.textContent || '';
                     const link = item.querySelector('link')?.textContent || 
@@ -500,7 +509,7 @@
                     
                     episodesHTML += `
                         <div class="episode" onclick="window.open('${link}', '_blank')">
-                            ${thumbnail ? `<img src="${thumbnail}" alt="${title}">` : ''}
+                            ${thumbnail ? `<img loading="lazy" src="${thumbnail}" alt="${title}">` : ''}
                             <div class="episode-overlay">
                                 <div class="episode-overlay-number">EP ${episodeNumber}</div>
                                 <div class="episode-overlay-title">${title}</div>
@@ -545,8 +554,8 @@
             let isDragging = false;
             let startX = 0;
             let dragSpeed = 0;
-            const baseSpeed = 0.5; // 遅くした（元: 1）
-            const dragMultiplier = 1.5; // ドラッグの感度も調整（元: 2）
+            const baseSpeed = 0.5;
+            const dragMultiplier = 1.5;
             
             // カルーセルの幅を取得
             const getCarouselWidth = () => carousel.scrollWidth / 3;
@@ -559,6 +568,13 @@
                 wrapper.style.cursor = 'grabbing';
             });
             
+            // タッチスタート（スマホ用）
+            wrapper.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                startX = e.touches[0].clientX;
+                dragSpeed = 0;
+            }, { passive: true });
+            
             // マウスムーブ
             wrapper.addEventListener('mousemove', (e) => {
                 if (!isDragging) return;
@@ -567,6 +583,15 @@
                 dragSpeed = diff * dragMultiplier;
                 startX = e.clientX;
             });
+            
+            // タッチムーブ（スマホ用）
+            wrapper.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                
+                const diff = e.touches[0].clientX - startX;
+                dragSpeed = diff * dragMultiplier;
+                startX = e.touches[0].clientX;
+            }, { passive: true });
             
             // マウスアップ
             const handleMouseUp = () => {
@@ -577,8 +602,18 @@
                 }
             };
             
+            // タッチエンド（スマホ用）
+            const handleTouchEnd = () => {
+                if (isDragging) {
+                    isDragging = false;
+                    dragSpeed = 0;
+                }
+            };
+            
             wrapper.addEventListener('mouseup', handleMouseUp);
             document.addEventListener('mouseup', handleMouseUp);
+            wrapper.addEventListener('touchend', handleTouchEnd);
+            document.addEventListener('touchend', handleTouchEnd);
             
             // マウスリーブ
             wrapper.addEventListener('mouseleave', () => {
