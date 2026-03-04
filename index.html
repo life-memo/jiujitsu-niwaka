@@ -445,21 +445,31 @@
     </footer>
 
     <script>
+        // RSSフィードを取得（リトライ＋複数プロキシ対応）
+        async function fetchRSS(feedUrl) {
+            const proxies = [
+                (url) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
+                (url) => 'https://corsproxy.io/?' + encodeURIComponent(url),
+            ];
+            for (const proxy of proxies) {
+                for (let i = 0; i < 2; i++) {
+                    try {
+                        const response = await fetch(proxy(feedUrl));
+                        if (response.ok) return await response.text();
+                    } catch (e) { /* 次を試す */ }
+                }
+            }
+            throw new Error('フィードの取得に失敗しました');
+        }
+
         // RSSフィードからエピソードを取得
         async function loadEpisodes() {
             const container = document.getElementById('episodes-container');
-            
+
             try {
-                const proxyUrl = 'https://api.allorigins.win/raw?url=';
                 const feedUrl = 'https://anchor.fm/s/10b36b274/podcast/rss';
-                
-                const response = await fetch(proxyUrl + encodeURIComponent(feedUrl));
-                
-                if (!response.ok) {
-                    throw new Error('フィードの取得に失敗しました');
-                }
-                
-                const xmlText = await response.text();
+
+                const xmlText = await fetchRSS(feedUrl);
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
                 const items = xmlDoc.querySelectorAll('item');
@@ -525,7 +535,9 @@
             } catch (error) {
                 container.innerHTML = `
                     <div class="error">
-                        <p>エピソードの読み込みに失敗しました</p>
+                        <p>押忍！</p>
+                        <p>ちょっと読み込みに時間がかかってるみたい。</p>
+                        <p>もう一回ページを更新して下さい。</p>
                     </div>
                 `;
             }
